@@ -6,8 +6,8 @@
 |---|---|---|---|---|
 | 1 | Create Gradle project |  1 point | Configuration of gradle properties when creating a project for the first time.  | Completed  |
 | 2 | Create Rubric, Grade and Criterion |  1 point | Familiarity with crating POJOs. Some logic is required to find out the relationship between the objects, but it should not be too time-consuming.  | Completed  |
-| 3 | Create Application class  |  1 point | This involves creating a class with a main method  |  Not Commenced |
-| 4 | Create Controller class  |  1 point | This story only involves creating the Controller class itself without adding any logic.  |  Not Commenced |
+| 3 | Create Caller class  |  1 point | This involves creating a class with a main method.  |  Completed |
+| 4 | Create Controller class  |  1 point | This story only involves creating the Controller class itself without adding any logic.  |  Completed |
 | 5 | Create new Rubric  | 1 point  | This task involves adding a method that will create a new Rubric object. Tests will have to be created before logic is implemented per TDD rules.  | Not Commenced  |
 | 6 | Add Criterion to Rubric  | 3 points  | This task involves adding a method that accepts a Criterion and a Rubric and adds Criterion to the Rubric if logic associated with it like a max of 10 Criterion is valid. Tests will have to be created before logic is implemented per TDD rules.  | Not Commenced  |
 | 7 | Get all Rubrics  | 1 points  | Create a method to get all Rubrics as a list in the Controller. This task has less points than task 6 because there is no need for complex logic or conditions when retrieving the list of Rubrics. Tests will have to be created before logic is implemented per TDD rules.  | Not Commenced  |
