@@ -9,7 +9,9 @@ import model.Rubric;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -81,5 +83,46 @@ public class Controller {
                 gradesByRubric.add(grade);
         }
         return gradesByRubric;
+    }
+
+    public double getAverageByRubric(Rubric rubric) throws NoDataException {
+        double total = 0.0;
+        List<Double> scores = generateScoresList(rubric);
+        for(double score : scores) {
+            total += score;
+        }
+        return total/scores.size();
+
+    }
+
+    public double getStandardDeviationByRubric(Rubric rubric) throws NoDataException {
+        double average = getAverageByRubric(rubric);
+        double sd = 0.0;
+        List<Double> scores = generateScoresList(rubric);
+        for(double score : scores) {
+            sd += Math.pow(score - average, 2);
+        }
+        return Math.sqrt(sd/scores.size());
+    }
+
+    public double getMaxByRubric(Rubric rubric) throws NoDataException {
+        return Collections.max(generateScoresList(rubric));
+    }
+
+    public double getMinByRubric(Rubric rubric) throws NoDataException {
+        return Collections.min(generateScoresList(rubric));
+    }
+
+    private List<Double> generateScoresList(Rubric rubric) throws NoDataException {
+        List<Double> scores = new ArrayList<>();
+        for(Grade grade : grades) {
+            if(grade.getRubric() == rubric && !grade.getScores().isEmpty())
+                for (Map.Entry<String, Integer> entry : grade.getScores().entrySet()) {
+                    scores.add(Double.valueOf(entry.getValue()));
+                }
+        }
+        if(scores.isEmpty())
+            throw new NoDataException("Cannot provide summary due to lack of data");
+        return scores;
     }
 }

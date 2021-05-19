@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -149,5 +150,89 @@ public class ControllerTests {
         controller.addGrade(grade);
         expected.add(grade);
         assertEquals(expected, controller.getGrades(rubric));
+    }
+
+    // Testing getting average score by Rubric with no corresponding scores
+    @Test
+    public void testGetAverageByRubricNoData() {
+        assertThrows(NoDataException.class, () -> controller.getAverageByRubric(rubrics.get(3)));
+    }
+
+    // Testing getting average score by Rubric
+    @Test
+    public void testGetAverageByRubric() throws NoDataException {
+        Map<String, Integer> scores = new HashMap<>();
+        for(int i = 1; i < 6; i++) {
+            scores.put("Test"+i, i);
+        }
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores);
+        grade2.setRubric(rubrics.get(1));
+        assertEquals(3.0, controller.getAverageByRubric(rubrics.get(1)));
+    }
+
+    // Testing getting standard deviation by Rubric with no corresponding scores
+    @Test
+    public void testGetStandardDeviationByRubricNoData() {
+        assertThrows(NoDataException.class, () -> controller.getStandardDeviationByRubric(rubrics.get(3)));
+    }
+
+    // Testing getting standard deviation by Rubric
+    @Test
+    public void testGetStandardDeviationByRubric() throws NoDataException {
+        Map<String, Integer> scores = new HashMap<>();
+        for(int i = 1; i < 6; i++) {
+            scores.put("Test"+i, i);
+        }
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores);
+        grade2.setRubric(rubrics.get(1));
+        assertEquals(1.4142135623730951, controller.getStandardDeviationByRubric(rubrics.get(1)));
+    }
+
+    // Testing getting max score by Rubric with no scores
+    @Test
+    public void testGetMaxScoreByRubricNoData() {
+        assertThrows(NoDataException.class, () -> controller.getMaxByRubric(rubrics.get(3)));
+    }
+
+    // Testing getting max score by Rubric
+    @Test
+    public void testGetMaxScoreByRubric() throws NoDataException {
+        Map<String, Integer> scores = new HashMap<>();
+        for(int i = 1; i < 6; i++) {
+            scores.put("Test"+i, i);
+        }
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores);
+        grade2.setRubric(rubrics.get(1));
+        assertEquals(5, controller.getMaxByRubric(rubrics.get(1)));
+    }
+
+    // Testing getting max score by Rubric with no scores
+    @Test
+    public void testGetMinScoreByRubricNoData() {
+        assertThrows(NoDataException.class, () -> controller.getMinByRubric(rubrics.get(3)));
+    }
+
+    // Testing getting max score by Rubric
+    @Test
+    public void testGetMinScoreByRubric() throws NoDataException {
+        Map<String, Integer> scores = new HashMap<>();
+        for(int i = 1; i < 6; i++) {
+            scores.put("Test"+i, i);
+        }
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores);
+        grade2.setRubric(rubrics.get(1));
+        assertEquals(1, controller.getMinByRubric(rubrics.get(1)));
     }
 }
