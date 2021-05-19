@@ -38,4 +38,8 @@ public class Controller {
         } else
             throw new RubricMaxCriteriaException("Rubric can only have 10 criteria max");
     }
+
+    public List<Rubric> getRubrics() {
+        return rubrics;
+    }
 }
