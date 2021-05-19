@@ -61,19 +61,22 @@ public class Controller {
         throw new RubricNotFoundException("Grade must have a rubric");
     }
 
-    public Grade addScore(Grade grade, Criterion criterion, int score) throws CriterionNotFoundException, GradeNotFoundException {
-        if(grade.getRubric().getCriteria().contains(criterion)) {
-            try {
-                int index = grades.indexOf(grade);
-                grade.getScores().put(criterion.getName(), score);
-                grades.set(index, grade);
-                return grade;
-            } catch (IndexOutOfBoundsException e) {
-                throw new GradeNotFoundException("Grade was not fount");
-            }
+    public Grade addScore(Grade grade, Criterion criterion, int score) throws CriterionNotFoundException, GradeNotFoundException, ScoreNotAllowedException {
+        if(score <=5) {
+            if(grade.getRubric().getCriteria().contains(criterion)) {
+                try {
+                    int index = grades.indexOf(grade);
+                    grade.getScores().put(criterion.getName(), score);
+                    grades.set(index, grade);
+                    return grade;
 
-        }
-        throw new CriterionNotFoundException("Criterion not present in rubric");
+                } catch (IndexOutOfBoundsException e) {
+                    throw new GradeNotFoundException("Student grades were not fount");
+                }
+            } else
+                throw new CriterionNotFoundException("Criterion not present in rubric");
+        } else
+            throw new ScoreNotAllowedException("Score must be from 1 to 5");
     }
 
     public List<Grade> getGrades(Rubric rubric) {
@@ -85,20 +88,58 @@ public class Controller {
         return gradesByRubric;
     }
 
-    public double getAverageByRubric(Rubric rubric) throws NoDataException {
+    public double getAverageByCriterion(Criterion criterion) throws NoDataException {
         double total = 0.0;
-        List<Double> scores = generateScoresList(rubric);
+        List<Double> scores = getAllScoresByCriterion(criterion);
         for(double score : scores) {
             total += score;
         }
         return total/scores.size();
+    }
 
+    public double getStandardDeviationByCriterion(Criterion criterion) throws NoDataException {
+        double average = getAverageByCriterion(criterion);
+        double sd = 0.0;
+        List<Double> scores = getAllScoresByCriterion(criterion);
+        for(double score : scores) {
+            sd += Math.pow(score - average, 2);
+        }
+        return Math.sqrt(sd/scores.size());
+    }
+
+    public double getMaxByCriterion(Criterion criterion) throws NoDataException {
+        return Collections.max(getAllScoresByCriterion(criterion));
+    }
+
+    public double getMinByCriterion(Criterion criterion) throws NoDataException {
+        return Collections.min(getAllScoresByCriterion(criterion));
+    }
+
+    private List<Double> getAllScoresByCriterion(Criterion criterion) throws NoDataException {
+        List<Double> scores = new ArrayList<>();
+        for(Grade grade : grades) {
+            if(grade.getScores().containsKey(criterion.getName())) {
+                scores.add(Double.valueOf(grade.getScores().get(criterion.getName())));
+            }
+        }
+        if(scores.isEmpty())
+            throw new NoDataException("Cannot provide summary due to lack of data");
+        return scores;
+    }
+
+    public double getAverageByRubric(Rubric rubric) throws NoDataException {
+        double total = 0.0;
+        List<Double> scores = getAllScoresByRubric(rubric);
+        for(double score : scores) {
+            total += score;
+        }
+        return total/scores.size();
     }
 
     public double getStandardDeviationByRubric(Rubric rubric) throws NoDataException {
         double average = getAverageByRubric(rubric);
         double sd = 0.0;
-        List<Double> scores = generateScoresList(rubric);
+        List<Double> scores = getAllScoresByRubric(rubric);
         for(double score : scores) {
             sd += Math.pow(score - average, 2);
         }
@@ -106,14 +147,14 @@ public class Controller {
     }
 
     public double getMaxByRubric(Rubric rubric) throws NoDataException {
-        return Collections.max(generateScoresList(rubric));
+        return Collections.max(getAllScoresByRubric(rubric));
     }
 
     public double getMinByRubric(Rubric rubric) throws NoDataException {
-        return Collections.min(generateScoresList(rubric));
+        return Collections.min(getAllScoresByRubric(rubric));
     }
 
-    private List<Double> generateScoresList(Rubric rubric) throws NoDataException {
+    private List<Double> getAllScoresByRubric(Rubric rubric) throws NoDataException {
         List<Double> scores = new ArrayList<>();
         for(Grade grade : grades) {
             if(grade.getRubric() == rubric && !grade.getScores().isEmpty())
