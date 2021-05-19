@@ -1,8 +1,7 @@
 package controller;
 
 import exception.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
 import model.Criterion;
 import model.Grade;
 import model.Rubric;
@@ -13,12 +12,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class Controller {
 
-    private List<Rubric> rubrics;
-    private List<Grade> grades;
+    private final List<Rubric> rubrics;
+    private final List<Grade> grades;
+
+    public Controller(List<Rubric> rubrics, List<Grade> grades) {
+        this.rubrics = rubrics;
+        this.grades = grades;
+    }
+
+    public Controller() {
+        this.rubrics = new ArrayList<>();
+        this.grades = new ArrayList<>();
+    }
 
     public Rubric createRubric(String name) throws RubricNoNameException {
         if(!StringUtils.isEmpty(name)) {
