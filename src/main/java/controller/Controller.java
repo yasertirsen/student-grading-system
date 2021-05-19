@@ -1,9 +1,6 @@
 package controller;
 
-import exception.CriterionNoNameException;
-import exception.RubricMaxCriteriaException;
-import exception.RubricNoNameException;
-import exception.RubricNotFoundException;
+import exception.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import model.Criterion;
@@ -54,8 +51,26 @@ public class Controller {
         throw new RubricNotFoundException("Rubric Not Found");
     }
 
-    public Grade addGrade(Grade grade) {
-        grades.add(grade);
-        return grade;
+    public Grade addGrade(Grade grade) throws RubricNotFoundException {
+        if(grade.getRubric() != null) {
+            grades.add(grade);
+            return grade;
+        }
+        throw new RubricNotFoundException("Grade must have a rubric");
+    }
+
+    public Grade addScore(Grade grade, Criterion criterion, int score) throws CriterionNotFoundException, GradeNotFoundException {
+        if(grade.getRubric().getCriteria().contains(criterion)) {
+            try {
+                int index = grades.indexOf(grade);
+                grade.getScores().put(criterion.getName(), score);
+                grades.set(index, grade);
+                return grade;
+            } catch (IndexOutOfBoundsException e) {
+                throw new GradeNotFoundException("Grade was not fount");
+            }
+
+        }
+        throw new CriterionNotFoundException("Criterion not present in rubric");
     }
 }
