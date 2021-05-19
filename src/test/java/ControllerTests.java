@@ -1,8 +1,5 @@
 import controller.Controller;
-import exception.CriterionNoNameException;
-import exception.RubricMaxCriteriaException;
-import exception.RubricNoNameException;
-import exception.RubricNotFoundException;
+import exception.*;
 import model.Criterion;
 import model.Grade;
 import model.Rubric;
@@ -21,6 +18,7 @@ public class ControllerTests {
     private final List<Rubric> rubrics;
     private final List<Grade> grades;
 
+    // Initializing some dummy data to be used when testing for different scenarios
     public ControllerTests() {
         grades = new ArrayList<>();
         rubrics = new ArrayList<>();
@@ -33,16 +31,19 @@ public class ControllerTests {
         controller = new Controller(rubrics, grades);
     }
 
+    // Testing adding a new Rubric
     @Test
     public void testCreateRubric() throws RubricNoNameException {
         assertEquals(new Rubric("Test", new ArrayList<>()), controller.createRubric("Test"));
     }
 
+    // Testing adding a Rubric with no provided name
     @Test
     public void testCreateRubricNoName() {
         assertThrows(RubricNoNameException.class, () -> controller.createRubric(""));
     }
 
+    // Testing adding a Criterion to a Rubric
     @Test
     public void testAddCriterion() throws RubricMaxCriteriaException, CriterionNoNameException {
         Criterion criterion = new Criterion("testCriterion");
@@ -53,6 +54,7 @@ public class ControllerTests {
         assertEquals(expected, controller.addCriterion(new Criterion("testCriterion"), rubrics.get(2)));
     }
 
+    // Testing adding a Criterion to a Rubric where the Rubric has 10 Criteria
     @Test
     public void testAddCriterionOver10() {
         List<Criterion> criteria = new ArrayList<>();
@@ -64,31 +66,76 @@ public class ControllerTests {
         assertThrows(RubricMaxCriteriaException.class, () -> controller.addCriterion(new Criterion("testCriterion"), rubric));
     }
 
+    // Testing adding a Criterion with no name
     @Test
     public void testAddCriterionNoName() {
         assertThrows(CriterionNoNameException.class, () -> controller.addCriterion(new Criterion(), rubrics.get(3)));
     }
 
+    // Testing retrieving all Rubrics
     @Test
     public void testGetRubrics() {
         assertEquals(rubrics, controller.getRubrics());
     }
 
+    // Testing retrieving a Rubric by name
     @Test
     public void testGetRubric() throws RubricNotFoundException {
         assertEquals(rubrics.get(4), controller.getRubric("4"));
     }
 
+    // Testing retrieving a Rubric that does not exist
     @Test
     public void testGetRubricNotFound() {
         assertThrows(RubricNotFoundException.class, () -> controller.getRubric("NotFoundTest"));
     }
 
+    // Testing adding a new Grade
     @Test
-    public void testAddGrade() {
+    public void testAddGrade() throws RubricNotFoundException {
         Grade expected = new Grade("Test", rubrics.get(1), new HashMap<>());
         assertEquals(expected, controller.addGrade(expected));
     }
 
+    // Testing adding a Grade without associated Rubric
+    @Test
+    public void testAddGradeNoRubric() {
+        Grade grade = new Grade("Test", null, new HashMap<>());
+        assertThrows(RubricNotFoundException.class, () -> controller.addGrade(grade));
+    }
 
+    // Testing adding a score to a Grade
+    @Test
+    public void testAddScore() throws CriterionNotFoundException, GradeNotFoundException {
+        Rubric rubric = rubrics.get(2);
+        Criterion criterion = new Criterion("Test");
+        rubric.getCriteria().add(criterion);
+        Grade grade = grades.get(2);
+        grade.setRubric(rubric);
+        Grade expected = grades.get(2);
+        expected.getScores().put(criterion.getName(), 3);
+        assertEquals(expected, controller.addScore(grade, criterion, 3));
+    }
+
+    // Testing adding a score to a Criterion that is not present in the Rubric of the Grade
+    @Test
+    public void testAddScoreCriterionNotInRubric() {
+        Rubric rubric = rubrics.get(2);
+        Criterion criterion = new Criterion("Test");
+        rubric.getCriteria().add(criterion);
+        Grade grade = grades.get(2);
+        grade.setRubric(rubric);
+        assertThrows(CriterionNotFoundException.class, () -> controller.addScore(grade, new Criterion("DifferentCriterion"), 3));
+    }
+
+    // Testing adding a score to a Criterion with a Grade that has not been added
+    @Test
+    public void testAddScoreGradeNotFound() {
+        Rubric rubric = rubrics.get(2);
+        Criterion criterion = new Criterion("Test");
+        rubric.getCriteria().add(criterion);
+        Grade grade = new Grade("Test", rubric, new HashMap<>());
+        grade.setRubric(rubric);
+        assertThrows(GradeNotFoundException.class, () -> controller.addScore(grade, criterion, 3));
+    }
 }
