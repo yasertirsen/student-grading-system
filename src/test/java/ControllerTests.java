@@ -107,7 +107,7 @@ public class ControllerTests {
 
     // Testing adding a score to a Grade
     @Test
-    public void testAddScore() throws CriterionNotFoundException, GradeNotFoundException {
+    public void testAddScore() throws CriterionNotFoundException, GradeNotFoundException, ScoreNotAllowedException {
         Rubric rubric = rubrics.get(2);
         Criterion criterion = new Criterion("Test");
         rubric.getCriteria().add(criterion);
@@ -116,6 +116,17 @@ public class ControllerTests {
         Grade expected = grades.get(2);
         expected.getScores().put(criterion.getName(), 3);
         assertEquals(expected, controller.addScore(grade, criterion, 3));
+    }
+
+    // Testing adding a score to a Grade over allowed score
+    @Test
+    public void testAddScoreOver5() {
+        Rubric rubric = rubrics.get(2);
+        Criterion criterion = new Criterion("Test");
+        rubric.getCriteria().add(criterion);
+        Grade grade = grades.get(2);
+        grade.setRubric(rubric);
+        assertThrows(ScoreNotAllowedException.class, () -> controller.addScore(grade, criterion, 9));
     }
 
     // Testing adding a score to a Criterion that is not present in the Rubric of the Grade
@@ -215,13 +226,13 @@ public class ControllerTests {
         assertEquals(5, controller.getMaxByRubric(rubrics.get(1)));
     }
 
-    // Testing getting max score by Rubric with no scores
+    // Testing getting max score by Criterion with no scores
     @Test
     public void testGetMinScoreByRubricNoData() {
         assertThrows(NoDataException.class, () -> controller.getMinByRubric(rubrics.get(3)));
     }
 
-    // Testing getting max score by Rubric
+    // Testing getting max score by Criterion
     @Test
     public void testGetMinScoreByRubric() throws NoDataException {
         Map<String, Integer> scores = new HashMap<>();
@@ -234,5 +245,77 @@ public class ControllerTests {
         grade2.setScores(scores);
         grade2.setRubric(rubrics.get(1));
         assertEquals(1, controller.getMinByRubric(rubrics.get(1)));
+    }
+
+    // Testing getting average score by Criterion with no corresponding scores
+    @Test
+    public void testGetAverageByCriterionNoData() {
+        assertThrows(NoDataException.class, () -> controller.getAverageByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting average score by Criterion
+    @Test
+    public void testGetAverageByCriterion() throws NoDataException {
+        Map<String, Integer> scores1 = new HashMap<String, Integer>() {{put("Test", 2);}};
+        Map<String, Integer> scores2 = new HashMap<String, Integer>() {{put("Test", 5);}};
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores1);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores2);
+        assertEquals(3.5, controller.getAverageByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting standard deviation by Criterion with no corresponding scores
+    @Test
+    public void testGetStandardDeviationByCriterionNoData() {
+        assertThrows(NoDataException.class, () -> controller.getStandardDeviationByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting standard deviation by Criterion
+    @Test
+    public void testGetStandardDeviationByCriterion() throws NoDataException {
+        Map<String, Integer> scores1 = new HashMap<String, Integer>() {{put("Test", 2);}};
+        Map<String, Integer> scores2 = new HashMap<String, Integer>() {{put("Test", 5);}};
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores1);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores2);
+        assertEquals(1.5, controller.getStandardDeviationByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting max score by Criterion with no scores
+    @Test
+    public void testGetMaxScoreByCriterionNoData() {
+        assertThrows(NoDataException.class, () -> controller.getMaxByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting max score by Criterion
+    @Test
+    public void testGetMaxScoreByCriterion() throws NoDataException {
+        Map<String, Integer> scores1 = new HashMap<String, Integer>() {{put("Test", 2);}};
+        Map<String, Integer> scores2 = new HashMap<String, Integer>() {{put("Test", 5);}};
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores1);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores2);
+        assertEquals(5, controller.getMaxByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting max score by Criterion with no scores
+    @Test
+    public void testGetMinScoreByCriterionNoData() {
+        assertThrows(NoDataException.class, () -> controller.getMinByCriterion(new Criterion("Test")));
+    }
+
+    // Testing getting max score by Criterion
+    @Test
+    public void testGetMinScoreByCriterion() throws NoDataException {
+        Map<String, Integer> scores1 = new HashMap<String, Integer>() {{put("Test", 2);}};
+        Map<String, Integer> scores2 = new HashMap<String, Integer>() {{put("Test", 5);}};
+        Grade grade1 = grades.get(1);
+        grade1.setScores(scores1);
+        Grade grade2 = grades.get(2);
+        grade2.setScores(scores2);
+        assertEquals(2, controller.getMinByCriterion(new Criterion("Test")));
     }
 }
