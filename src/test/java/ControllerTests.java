@@ -2,6 +2,7 @@ import controller.Controller;
 import exception.CriterionNoNameException;
 import exception.RubricMaxCriteriaException;
 import exception.RubricNoNameException;
+import exception.RubricNotFoundException;
 import model.Criterion;
 import model.Rubric;
 import org.junit.jupiter.api.Test;
@@ -65,4 +66,16 @@ public class ControllerTests {
     public void testGetRubrics() {
         assertEquals(rubrics, controller.getRubrics());
     }
+
+    @Test
+    public void testGetRubric() throws RubricNotFoundException {
+        assertEquals(rubrics.get(4), controller.getRubric("4"));
+    }
+
+    @Test
+    public void testGetRubricNotFound() {
+        assertThrows(RubricNotFoundException.class, () -> controller.getRubric("NotFoundTest"));
+    }
+
+
 }
