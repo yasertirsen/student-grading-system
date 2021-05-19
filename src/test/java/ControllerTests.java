@@ -138,4 +138,16 @@ public class ControllerTests {
         grade.setRubric(rubric);
         assertThrows(GradeNotFoundException.class, () -> controller.addScore(grade, criterion, 3));
     }
+
+    // Testing getting Grades by Rubric
+    @Test
+    public void testGetGrades() throws RubricNotFoundException {
+        Rubric rubric = rubrics.get(3);
+        List<Grade> expected = new ArrayList<>();
+        expected.add(grades.get(3));
+        Grade grade = new Grade("Test1", rubric, new HashMap<>());
+        controller.addGrade(grade);
+        expected.add(grade);
+        assertEquals(expected, controller.getGrades(rubric));
+    }
 }
