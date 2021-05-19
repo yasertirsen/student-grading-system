@@ -7,6 +7,7 @@ import exception.RubricNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import model.Criterion;
+import model.Grade;
 import model.Rubric;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class Controller {
 
     private List<Rubric> rubrics;
+    private List<Grade> grades;
 
     public Rubric createRubric(String name) throws RubricNoNameException {
         if(!StringUtils.isEmpty(name)) {
@@ -50,5 +52,10 @@ public class Controller {
                 return rubric;
         }
         throw new RubricNotFoundException("Rubric Not Found");
+    }
+
+    public Grade addGrade(Grade grade) {
+        grades.add(grade);
+        return grade;
     }
 }

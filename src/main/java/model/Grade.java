@@ -11,5 +11,6 @@ import java.util.Map;
 @Data
 public class Grade {
     private String student;
+    private Rubric rubric;
     private Map<String, Integer> scores;
 }
