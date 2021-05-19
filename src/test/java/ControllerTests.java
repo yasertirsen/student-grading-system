@@ -60,4 +60,9 @@ public class ControllerTests {
     public void testAddCriterionNoName() {
         assertThrows(CriterionNoNameException.class, () -> controller.addCriterion(new Criterion(), rubrics.get(3)));
     }
+
+    @Test
+    public void testGetRubrics() {
+        assertEquals(rubrics, controller.getRubrics());
+    }
 }

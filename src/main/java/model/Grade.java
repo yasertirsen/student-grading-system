@@ -11,5 +11,5 @@ import java.util.Map;
 @Data
 public class Grade {
     private String student;
-    private Map<String, Double> scores;
+    private Map<String, Integer> scores;
 }
