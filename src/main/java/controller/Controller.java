@@ -3,6 +3,7 @@ package controller;
 import exception.CriterionNoNameException;
 import exception.RubricMaxCriteriaException;
 import exception.RubricNoNameException;
+import exception.RubricNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import model.Criterion;
@@ -41,5 +42,13 @@ public class Controller {
 
     public List<Rubric> getRubrics() {
         return rubrics;
+    }
+
+    public Rubric getRubric(String name) throws RubricNotFoundException {
+        for(Rubric rubric : rubrics) {
+            if(rubric.getName().equalsIgnoreCase(name))
+                return rubric;
+        }
+        throw new RubricNotFoundException("Rubric Not Found");
     }
 }
