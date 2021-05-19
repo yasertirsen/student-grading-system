@@ -73,4 +73,13 @@ public class Controller {
         }
         throw new CriterionNotFoundException("Criterion not present in rubric");
     }
+
+    public List<Grade> getGrades(Rubric rubric) {
+        List<Grade> gradesByRubric = new ArrayList<>();
+        for(Grade grade : grades) {
+            if(grade.getRubric() == rubric)
+                gradesByRubric.add(grade);
+        }
+        return gradesByRubric;
+    }
 }
