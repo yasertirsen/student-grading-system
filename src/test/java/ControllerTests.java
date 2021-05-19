@@ -4,10 +4,12 @@ import exception.RubricMaxCriteriaException;
 import exception.RubricNoNameException;
 import exception.RubricNotFoundException;
 import model.Criterion;
+import model.Grade;
 import model.Rubric;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,13 +19,18 @@ public class ControllerTests {
 
     private final Controller controller;
     private final List<Rubric> rubrics;
+    private final List<Grade> grades;
 
     public ControllerTests() {
+        grades = new ArrayList<>();
         rubrics = new ArrayList<>();
+        Rubric rubric;
         for(int i = 0; i < 5; i++) {
-            rubrics.add(new Rubric(String.valueOf(i), new ArrayList<>()));
+            rubric = new Rubric(String.valueOf(i), new ArrayList<>());
+            rubrics.add(rubric);
+            grades.add(new Grade(String.valueOf(i), rubric, new HashMap<>()));
         }
-        controller = new Controller(rubrics);
+        controller = new Controller(rubrics, grades);
     }
 
     @Test
@@ -75,6 +82,12 @@ public class ControllerTests {
     @Test
     public void testGetRubricNotFound() {
         assertThrows(RubricNotFoundException.class, () -> controller.getRubric("NotFoundTest"));
+    }
+
+    @Test
+    public void testAddGrade() {
+        Grade expected = new Grade("Test", rubrics.get(1), new HashMap<>());
+        assertEquals(expected, controller.addGrade(expected));
     }
 
 
