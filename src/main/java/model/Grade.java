@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.util.Map;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class Grade {
     private String student;
