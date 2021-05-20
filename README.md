@@ -82,4 +82,7 @@ to look for when reviewing a PR.
 - Naming: This involves making sure naming of things is appropriate and follows the team's coding standards.
 - Comments: The reviewer should check that comments are clear and useful, and mostly explain why instead of what.
 - Documentation: This involves making sure documentation reflects new changes and deprecated code is removed.
-  
+
+[This PR](https://github.com/yasertirsen/student-grading-system/pull/14) is an example of a PR that I have created. 
+I commented on the PR with some things to avoid when doing future tasks. The naming of a method was obscure, and it needed to be changed.
+The task had a lot of complexity and could have been split up into smaller ones. The code was a little complex to read, so I requested comments to explain the solution.
